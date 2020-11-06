@@ -1,0 +1,40 @@
+@startuml
+title <size:20> Withdrawal Cedules Analisys</size>
+footer  Raulino Neto\n  [[https://github.com/raulinoneto/atm-withdrawal-analisys ATM Withdrawal Analisys]]
+
+
+actor user
+participant Withdrawal
+entity HTTPAdapter
+entity Service
+database Redis
+user -> Withdrawal: GET /v1/withdrawal/${amount}
+activate Withdrawal
+Withdrawal -> HTTPAdapter: 1) ProcessHTTPRequest
+    activate HTTPAdapter
+        HTTPAdapter -> HTTPAdapter: Validate Request
+        alt if Request is invalid
+        Withdrawal <-- HTTPAdapter: Return invalid Request
+        user <-- Withdrawal: HTTP Status 400 Bad Request
+        end
+          HTTPAdapter -> Service: Send to Process Amount
+        activate Service
+           Service -> Redis: Verify Cached Results
+           activate Redis
+           Service <-- Redis: Return Results
+           deactivate Redis
+           alt if HasCachedResult
+               HTTPAdapter <-- Service : Returns Result Found
+               HTTPAdapter -> HTTPAdapter: Format Response
+               Withdrawal <-- HTTPAdapter: Returns Result Formatted
+               user <-- Withdrawal: HTTP Status 200 OK
+           end
+           Service -> Service: Process Bills Based in Amount Value
+           HTTPAdapter <-- Service: Returns Processed Result
+        deactivate Service
+            HTTPAdapter -> HTTPAdapter: Format Response
+            Withdrawal <-- : Returns Processed Result Formatted
+    deactivate HTTPAdapter
+user <-- Withdrawal: HTTP Status 200 OK
+deactivate Withdrawal
+@enduml
