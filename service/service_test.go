@@ -2,9 +2,26 @@ package service
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
+
+type CacheMock struct {
+	mock.Mock
+}
+
+func (c *CacheMock) Get(ctx context.Context, key int) map[int]int {
+	args := c.Called(ctx, key)
+	if res := args.Get(0); res != nil {
+		return res.(map[int]int)
+	}
+	return nil
+}
+
+func (c *CacheMock) Set(context.Context, int, map[int]int) {}
 
 type tCase struct {
 	payload     int
@@ -66,11 +83,43 @@ var tCases = map[string]tCase{
 	},
 }
 
+var cache = new(CacheMock)
+
 func TestService_ProcessAmount(t *testing.T) {
-	svc := New()
-	for name, test := range tCases {
-		bills := svc.ProcessAmount(context.Background(), test.payload)
-		assert.NotNil(t, bills, "shouldn't be nil", name)
-		assert.Equal(t, test.expected, bills)
+	for name, tCase := range tCases {
+		cache.On("Get", mock.Anything, tCase.payload).Once().Return(nil)
+		svc := New(cache)
+		res := svc.ProcessAmount(context.Background(), tCase.payload)
+		assert.NotNil(t, res, "shouldn't be nil", name)
+		assert.Equal(t, tCase.expected, res.Coins)
+		assert.Equal(t, float64(tCase.payload), res.Amount)
+	}
+}
+
+func TestService_ProcessAmountWithCache(t *testing.T) {
+	for name, tCase := range tCases {
+		cache.On("Get", mock.Anything, tCase.payload).Once().Return(tCase.expected)
+		svc := New(cache)
+		res := svc.ProcessAmount(context.Background(), tCase.payload)
+		assert.NotNil(t, res, "shouldn't be nil", name)
+		assert.Equal(t, tCase.expected, res.Coins)
+		assert.Equal(t, float64(tCase.payload), res.Amount)
+	}
+}
+
+func ExampleService_ProcessAmount() {
+	amount := 1987
+	cache.On("Get", mock.Anything, amount).Once().Return(nil)
+	svc := New(cache)
+	res := svc.ProcessAmount(context.Background(), amount)
+	fmt.Printf("%+v",res)
+	// Output: &{Amount:1987 Coins:map[1:2 5:1 10:3 50:39]}
+}
+
+func BenchmarkService_ProcessAmount(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		cache.On("Get", mock.Anything, n).Once().Return(nil)
+		svc := New(cache)
+		_ = svc.ProcessAmount(context.Background(), n)
 	}
 }
