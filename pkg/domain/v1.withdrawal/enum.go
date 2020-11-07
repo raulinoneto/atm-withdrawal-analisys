@@ -1,4 +1,4 @@
-package service
+package v1_withdrawal
 
 const (
 	// Fifty is based in 50 Reals Coin
