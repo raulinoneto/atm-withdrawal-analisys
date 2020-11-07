@@ -29,8 +29,12 @@ Withdrawal -> HTTPAdapter: 1) ProcessHTTPRequest
                Withdrawal <-- HTTPAdapter: Returns Result Formatted
                user <-- Withdrawal: HTTP Status 200 OK
            end
-           Service -> Service: Process Bills Based in Amount Value
+           Service -> Service: Process coins Based in Amount Value
            HTTPAdapter <-- Service: Returns Processed Result
+           Service -> Redis: Set Known Result to Cache
+           activate Redis
+                Redis -> Redis : Save Known Result
+           deactivate Redis
         deactivate Service
             HTTPAdapter -> HTTPAdapter: Format Response
             Withdrawal <-- : Returns Processed Result Formatted
