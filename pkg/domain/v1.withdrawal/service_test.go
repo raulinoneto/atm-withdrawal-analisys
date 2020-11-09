@@ -1,4 +1,4 @@
-package service
+package withdrawal
 
 import (
 	"context"
@@ -112,8 +112,8 @@ func ExampleService_ProcessAmount() {
 	cache.On("Get", mock.Anything, amount).Once().Return(nil)
 	svc := New(cache)
 	res := svc.ProcessAmount(context.Background(), amount)
-	fmt.Printf("%+v",res)
-	// Output: &{Amount:1987 Coins:map[1:2 5:1 10:3 50:39]}
+	fmt.Println(res)
+	// Output: {"amount":1987,"coins":{"1":2,"10":3,"5":1,"50":39}}
 }
 
 func BenchmarkService_ProcessAmount(b *testing.B) {

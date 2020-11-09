@@ -1,4 +1,4 @@
-package service
+package withdrawal
 
 const (
 	// Fifty is based in 50 Reals Coin
