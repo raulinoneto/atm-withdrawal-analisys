@@ -69,3 +69,13 @@ func TestAdapter_WithdrawalHandlerErrorDecimal(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+
+func TestAdapter_WithdrawalHandlerErrorNegative(t *testing.T) {
+	svcmock := new(withdrawalServiceMock)
+	adapter := New(svcmock)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest(http.MethodGet, "http://test?amount=-2", nil)
+	err := adapter.WithdrawalHandler(w, r)
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
