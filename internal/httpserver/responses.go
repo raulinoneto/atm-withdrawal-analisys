@@ -35,8 +35,6 @@ func (e *Error) ToHttpResponse(w http.ResponseWriter) error {
 	)
 }
 
-
-
 // BuildOkResponse responses with status 200
 func BuildOkResponse(w http.ResponseWriter, result fmt.Stringer) error {
 	return buildResponse(w, result, http.StatusOK)

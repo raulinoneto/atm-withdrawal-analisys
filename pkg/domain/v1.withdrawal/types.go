@@ -24,7 +24,7 @@ type (
 func (res *ServiceResponse) String() string {
 	bytes, err := json.Marshal(res)
 	if err != nil {
-		logrus.Warn("trying to sent wrong response format "+ err.Error())
+		logrus.Warn("trying to sent wrong response format " + err.Error())
 	}
 	return string(bytes)
 }

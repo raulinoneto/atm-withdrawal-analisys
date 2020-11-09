@@ -8,7 +8,7 @@ import (
 
 func TestServer_Run(t *testing.T) {
 	s := New(&Options{
-		Host:        "4321",
+		Host: "4321",
 	})
 	go s.Run()
 	time.Sleep(2 * time.Second)

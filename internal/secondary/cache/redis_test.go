@@ -46,7 +46,7 @@ func TestService_Get(t *testing.T) {
 	rdb := New(cmdableMock)
 	res := rdb.Get(ctx, 1)
 	assert.NotNil(t, res)
-	assert.Equal(t, map[int]int{1:1}, res)
+	assert.Equal(t, map[int]int{1: 1}, res)
 }
 
 func TestService_Get_Error(t *testing.T) {

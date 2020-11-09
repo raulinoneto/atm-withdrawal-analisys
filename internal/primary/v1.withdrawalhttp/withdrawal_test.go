@@ -34,7 +34,7 @@ func TestAdapter_WithdrawalHandler(t *testing.T) {
 	assert.NoError(t, err)
 	result, err := ioutil.ReadAll(w.Body)
 	resSvc := new(withdrawal.ServiceResponse)
-	err = json.Unmarshal(result,resSvc)
+	err = json.Unmarshal(result, resSvc)
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, *resSvc, withdrawal.ServiceResponse{})

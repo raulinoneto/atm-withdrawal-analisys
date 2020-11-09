@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"github.com/raulinoneto/atm-withdrawal-analisys/tools/logger"
 )
 
 type (
@@ -21,23 +21,22 @@ type (
 		Routes      []Route
 		Port        string
 		Host        string
-		logger      logrus.FieldLogger
+		Logger      *logger.Logger
 	}
 )
 
 type Server struct {
 	middlewares   []MiddlewareFunc
 	routes        []Route
-	port          string
 	mux           *http.ServeMux
 	server        *http.Server
-	logger      logrus.FieldLogger
+	logger        *logger.Logger
 	serverRunning bool
 }
 
 func New(opt *Options) *Server {
-	if opt.logger == nil {
-		opt.logger = logrus.New()
+	if opt.Logger == nil {
+		opt.Logger = logger.New(context.Background())
 	}
 	return &Server{
 		middlewares: opt.Middlewares,
@@ -45,7 +44,7 @@ func New(opt *Options) *Server {
 		server: &http.Server{
 			Addr: opt.Host + ":" + opt.Port,
 		},
-		logger: opt.logger,
+		logger:        opt.Logger,
 		serverRunning: false,
 	}
 }
@@ -89,7 +88,7 @@ func (s *Server) setHandler(mux *http.ServeMux, route Route) {
 
 func (s *Server) serve() {
 	if err := s.server.ListenAndServe(); err != nil {
-		s.logger.Warn("Server could not start: " + err.Error())
+		s.logger.Error("Server could not start: " + err.Error())
 	}
 	s.serverRunning = true
 }

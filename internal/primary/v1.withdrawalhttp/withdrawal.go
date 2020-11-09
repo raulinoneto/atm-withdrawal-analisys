@@ -19,11 +19,11 @@ type Adapter struct {
 	svc WithdrawalService
 }
 
-func New(svc WithdrawalService) *Adapter{
+func New(svc WithdrawalService) *Adapter {
 	return &Adapter{svc: svc}
 }
 
-func (a *Adapter) WithdrawalHandler(w http.ResponseWriter, r *http.Request) error  {
+func (a *Adapter) WithdrawalHandler(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 	log := logger.New(ctx)
 	log.Info("Started WithdrawalHttpAdapter::WithdrawalHandler")
@@ -39,16 +39,16 @@ func (a *Adapter) WithdrawalHandler(w http.ResponseWriter, r *http.Request) erro
 	return httpserver.BuildOkResponse(w, a.svc.ProcessAmount(ctx, amount))
 }
 
-func validateAmount(r *http.Request, log *logger.Logger) (int, error){
+func validateAmount(r *http.Request, log *logger.Logger) (int, error) {
 	amtParam := r.FormValue("amount")
 	amount, err := strconv.ParseFloat(amtParam, 64)
 	if err != nil {
-		err = errors.New("Invalid amount: "+ err.Error())
+		err = errors.New("Invalid amount: " + err.Error())
 		return 0, err
 	}
 	log.WithField("amount", amount)
 	log.Info("Amount is a valid float")
-	if amount <=0{
+	if amount <= 0 {
 		log.Warn("User sent an invalid amount")
 		return 0, errors.New(" Amount must be higher then zero ")
 	}

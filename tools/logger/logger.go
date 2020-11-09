@@ -14,7 +14,6 @@ type Logger struct {
 	*logrus.Entry
 }
 
-
 func New(ctx context.Context) *Logger {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	transactionId, ok := ctx.Value(transactionIdKey).(string)
@@ -28,6 +27,6 @@ func New(ctx context.Context) *Logger {
 	}
 }
 
-func (l *Logger) WithField(key string, value interface{}){
+func (l *Logger) WithField(key string, value interface{}) {
 	l.Entry = l.Entry.WithField(key, value)
 }

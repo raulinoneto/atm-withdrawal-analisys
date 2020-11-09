@@ -1,28 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"github.com/raulinoneto/atm-withdrawal-analisys/internal/httpserver"
-	"net/http"
+	"github.com/raulinoneto/atm-withdrawal-analisys/config/container"
+	"github.com/raulinoneto/atm-withdrawal-analisys/config/routes"
 )
 
 func main() {
-	server := httpserver.New(&httpserver.Options{
-		Middlewares: nil,
-		Routes: []httpserver.Route{
-			{
-				Path:   "/test",
-				Method: http.MethodGet,
-				Handler: func(writer http.ResponseWriter, request *http.Request) error {
-					//fmt.Fprint(writer, "test")
-					fmt.Fprint(writer, request.FormValue("id"))
-					return nil
-				},
-				Middlewares: nil,
-			},
-		},
-		Port: "8080",
-		Host: "",
-	})
+	c := new(container.Container)
+	server := c.GetServer(routes.GetRoutes(c), nil)
 	server.Run()
 }
