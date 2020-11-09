@@ -61,7 +61,7 @@ func (c *Container) GetCache() withdrawal.Cacher {
 		if len(host) <=0 {
 			host = "localhost:6379"
 		}
-		pool := os.Getenv("REDIS_HOST")
+		pool := os.Getenv("REDIS_POOL")
 		poolInt, err := strconv.Atoi(pool)
 		if len(pool) <=0 || err != nil || poolInt <= 0{
 			poolInt = 20

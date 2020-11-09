@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/go-redis/redis/v8"
 	"github.com/stretchr/testify/assert"
@@ -29,10 +30,12 @@ func (cmd *CmdableMock) Get(ctx context.Context, key string) *redis.StringCmd {
 func TestService_Set(t *testing.T) {
 	key := 50
 	val := map[int]int{10: 5}
+	valJson, err := json.Marshal(val)
+	assert.NoError(t, err)
 	ctx := context.Background()
 	cmd := redis.NewStatusCmd(ctx)
 	cmdableMock := new(CmdableMock)
-	cmdableMock.On("Set", mock.Anything, strconv.Itoa(key), val, mock.Anything).Once().Return(cmd)
+	cmdableMock.On("Set", mock.Anything, strconv.Itoa(key), string(valJson), mock.Anything).Once().Return(cmd)
 	rdb := New(cmdableMock)
 	rdb.Set(ctx, key, val)
 }

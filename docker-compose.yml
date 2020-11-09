@@ -1,0 +1,40 @@
+
+version: "3.1"
+
+services:
+  cache:
+    container_name: redis-cache
+    image: "redis:alpine"
+    command: redis-server
+    restart: always
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    ports:
+      - 6379:6379
+    networks:
+      transactions-network:
+        ipv4_address: 10.0.5.12
+  app:
+    container_name: atm-withdrawal-api
+    build: ./build/docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/var/app
+    ports:
+      - 8080:8080
+    env_file:
+      - .env.local
+    networks:
+      transactions-network:
+        ipv4_address: 10.0.5.10
+
+networks:
+  transactions-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.5.10/24

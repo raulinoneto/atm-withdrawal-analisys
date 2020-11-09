@@ -19,6 +19,7 @@ func New(ctx context.Context) *Logger {
 	transactionId, ok := ctx.Value(transactionIdKey).(string)
 	if !ok || len(transactionId) <= 0 {
 		transactionId = uuid.New().String()
+		ctx = context.WithValue(ctx, transactionIdKey, transactionId)
 	}
 	return &Logger{
 		Entry: logrus.WithContext(ctx).
