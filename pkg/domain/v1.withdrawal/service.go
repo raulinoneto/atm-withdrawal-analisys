@@ -1,10 +1,9 @@
-package v1_withdrawal
+package withdrawal
 
 import (
 	"context"
 	"fmt"
 	"github.com/raulinoneto/atm-withdrawal-analisys/tools/logger"
-	"github.com/sirupsen/logrus"
 )
 
 // Service is the main logic of application
@@ -19,7 +18,8 @@ func New(cache Cacher) *Service {
 
 // ProcessAmount give how many coins will be used at ATM Withdrawal
 func (svc *Service) ProcessAmount(ctx context.Context, amount int) *ServiceResponse {
-	log := logger.New(ctx).WithField("amount", amount)
+	log := logger.New(ctx)
+	log.WithField("amount", amount)
 	log.Info("Initialize ProcessAmount")
 	res := &ServiceResponse{
 		Amount: float64(amount),
@@ -32,13 +32,14 @@ func (svc *Service) ProcessAmount(ctx context.Context, amount int) *ServiceRespo
 	for amount > 0 {
 		amount = setCoin(log, amount, res.Coins)
 	}
-	log.WithField("coin_count", res.Coins).Info("coin Count Result")
+	log.WithField("coin_count", res.Coins)
+	log.Info("coin Count Result")
 	go svc.cache.Set(ctx, amount, res.Coins)
 	return res
 }
 
 // setCoin Calculate the amount based in knew coins
-func setCoin(logger *logrus.Entry, amount int, coinCount map[int]int) int {
+func setCoin(logger *logger.Logger, amount int, coinCount map[int]int) int {
 	switch {
 	case amount%Fifty == 0:
 		amount -= Fifty

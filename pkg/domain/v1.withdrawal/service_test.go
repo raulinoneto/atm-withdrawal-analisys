@@ -1,4 +1,4 @@
-package v1_withdrawal
+package withdrawal
 
 import (
 	"context"

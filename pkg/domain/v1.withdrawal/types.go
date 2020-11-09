@@ -1,6 +1,10 @@
-package v1_withdrawal
+package withdrawal
 
-import "context"
+import (
+	"context"
+	"encoding/json"
+	"github.com/sirupsen/logrus"
+)
 
 type (
 	ServiceResponse struct {
@@ -16,3 +20,11 @@ type (
 		Set(ctx context.Context, amount int, coinCount map[int]int)
 	}
 )
+
+func (res *ServiceResponse) String() string {
+	bytes, err := json.Marshal(res)
+	if err != nil {
+		logrus.Warn("trying to sent wrong response format "+ err.Error())
+	}
+	return string(bytes)
+}
