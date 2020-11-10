@@ -24,6 +24,60 @@ $ make run-docker \\ Runs docker-compose with application image and its requirem
 $ make run-docke-clean \\ Run a clean build image from docker application 
 ```
 
+## How to use
+Open API Docs at `./docs/swagger.yml`
+### /withdrawal
+
+#### GET
+##### Summary
+
+Analise the coins for amount
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ---- |
+| amount | query | Pass the amount you want withdrawal | Yes | number |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Complete analysis | [AnalysisResponse](#analysisresponse) |
+| 400 | bad input parameter |  |
+
+### Models
+
+#### AnalysisResponse
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| amount | number | _Example:_ `1987` | Yes |
+| coins | [Coins](#coins) |  | Yes |
+
+#### Coins
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| 1 | integer | _Example:_ `2` | No |
+| 5 | integer | _Example:_ `1` | No |
+| 10 | integer | _Example:_ `3` | No |
+| 50 | integer | _Example:_ `39` | No |
+
+### Example:
+* `[GET] http://0.0.0.0:8080/withdrawal?amount=1987`
+```json
+{
+  "amount": 1987,
+  "coins": {
+    "1": 2,
+    "5": 1,
+    "10": 3,
+    "50": 39
+  }
+}
+```
+
 ## Project Organization
 ### Third Part Packages
 * [github.com/go-redis/redis/v8](https://github.com/go-redis/redis) - Main redis package from golang community
@@ -87,7 +141,6 @@ The application will consult the redis before to analise the value.
 ## Biography
 
 1. [My Talk About Hexagonal Architecture](https://docs.google.com/presentation/d/1nEpfDEfnwGB3Xy-7CMfccW7L2qZeo4UVR738434bVVY/edit?usp=sharing)
-2. [My Talk About Postman](https://docs.google.com/presentation/d/1SHUSATWs-vOkScWXm6ae4vgjomEKeDrMkm0JQ1fXpRw/edit?usp=sharing)
 3. [Clean Architecture - Uncle Bob](https://www.amazon.com.br/Clean-Architecture-Craftsmans-Software-Structure-ebook/dp/B075LRM681/)
 4. [The Proposed Project Structure](https://github.com/golang-standards/project-layout)
 

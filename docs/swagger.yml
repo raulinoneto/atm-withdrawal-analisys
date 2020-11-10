@@ -24,24 +24,20 @@ paths:
     get:
       tags:
         - developers
-      summary: searches inventory
-      operationId: searchInventory
-      description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+      summary: Analise the coins for amount
       produces:
         - application/json
       parameters:
         - in: query
           name: amount
-          description: pass an optional search string for looking up inventory
+          description: Pass the amount you want withdrawal
           required: true
           type: number
-          minimum: 0
+          minimum: 1
 
       responses:
         200:
-          description: search results matching criteria
+          description: Complete analysis
           schema:
             $ref: '#/definitions/AnalysisResponse'
         400:
