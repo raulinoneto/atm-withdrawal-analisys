@@ -1,8 +1,7 @@
 # ATM Withdrawal Analysis
 Based in real coins with value 50, 10, 5, and 1, this api calculate how many coins will be used based on value.
 
-##Install
-Requirements:
+## Install Requirements:
 * docker 19 or latest
 * docker-compose 1.27 or latest
 * make command
