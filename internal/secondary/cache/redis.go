@@ -27,7 +27,7 @@ func (rs *Service) Set(ctx context.Context, key int, value map[int]int) {
 		return
 	}
 	if err := rs.svc.Set(context.Background(), strconv.Itoa(key), string(valJson), 24*time.Hour).Err(); err != nil {
-		log.Error("Error on set on Redis")
+		log.Error("Error on set on Redis " + err.Error())
 		return
 	}
 	log.Info("Set on Success")
@@ -40,7 +40,7 @@ func (rs *Service) Get(ctx context.Context, key int) map[int]int {
 	val := rs.svc.Get(ctx, strconv.Itoa(key))
 	result, err := val.Bytes()
 	if err != nil && err != redis.Nil {
-		log.Error("Error on get on Redis")
+		log.Error("Error on get on Redis " + err.Error())
 		return nil
 	}
 	if err == redis.Nil {
