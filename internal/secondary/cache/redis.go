@@ -21,7 +21,12 @@ func New(svc redis.Cmdable) *Service {
 func (rs *Service) Set(ctx context.Context, key int, value map[int]int) {
 	log := logger.New(ctx)
 	log.Info("Set on redis")
-	if err := rs.svc.Set(ctx, strconv.Itoa(key), value, 24*time.Hour).Err(); err != nil {
+	valJson, err := json.Marshal(value)
+	if err != nil && err != redis.Nil {
+		log.Error("Error on marshal json on ser cache")
+		return
+	}
+	if err := rs.svc.Set(context.Background(), strconv.Itoa(key), string(valJson), 24*time.Hour).Err(); err != nil {
 		log.Error("Error on set on Redis")
 		return
 	}
@@ -36,6 +41,10 @@ func (rs *Service) Get(ctx context.Context, key int) map[int]int {
 	result, err := val.Bytes()
 	if err != nil && err != redis.Nil {
 		log.Error("Error on get on Redis")
+		return nil
+	}
+	if err == redis.Nil {
+		log.Error("Not found in redis")
 		return nil
 	}
 	log.WithField("result", result)

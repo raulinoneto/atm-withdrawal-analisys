@@ -34,7 +34,7 @@ func (svc *Service) ProcessAmount(ctx context.Context, amount int) *ServiceRespo
 	}
 	log.WithField("coin_count", res.Coins)
 	log.Info("coin Count Result")
-	go svc.cache.Set(ctx, amount, res.Coins)
+	svc.cache.Set(ctx, int(res.Amount), res.Coins)
 	return res
 }
 

@@ -1,0 +1,75 @@
+swagger: '2.0'
+info:
+  description: Based in real coins with value 50, 10, 5, and 1, this api calculate how many coins will be used based on value.
+
+  version: 1.0.0
+  title: ATM Withdrawal Analysis
+  # put the contact info for your development or API team
+  contact:
+    email: raulinoneto91@gmail.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+
+paths:
+  /withdrawal:
+    get:
+      tags:
+        - developers
+      summary: Analise the coins for amount
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: amount
+          description: Pass the amount you want withdrawal
+          required: true
+          type: number
+          minimum: 1
+
+      responses:
+        200:
+          description: Complete analysis
+          schema:
+            $ref: '#/definitions/AnalysisResponse'
+        400:
+          description: bad input parameter
+
+definitions:
+  AnalysisResponse:
+    type: object
+    required:
+      - amount
+      - coins
+    properties:
+      amount:
+        type: number
+        example: 1987
+      coins:
+        $ref: '#/definitions/Coins'
+  Coins:
+    properties:
+      50:
+        type: integer
+        example: 39
+      10:
+        type: integer
+        example:  3
+      5:
+        type: integer
+        example:  1
+      1:
+        type: integer
+        example:  2
+host: 0.0.0.0:8080
+basePath: /rauzito/atm-withdrawal/1.0.0
+schemes:
+  - https
